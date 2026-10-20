@@ -23,3 +23,10 @@ The trade-off: this is a predicate, not a decoder. It returns ``True`` or ``Fals
 ## Awkward edge
 
 The validator operates on ``bytes`` and ``bytearray`` only. Passing ``str`` raises ``TypeError``. This is deliberate: FSS-UTF is itself the text-to-bytes transform, so accepting ``str`` would force an implicit choice of some other encoding to produce bytes — exactly the ambiguity the library exists to remove. If you have text and want bytes, encode them yourself first; then validate.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
